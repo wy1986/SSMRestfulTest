@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wy.dao.TeacherDao">
+	<select id="getTeachers" resultType="com.wy.bean.Teacher">
+		select * from teacher
+	</select>
+
+    <select id="getTeacherById" parameterType="Integer" resultMap="teacher">
+        select * from teacher where id=#{id}
+    </select>
+    
+    <resultMap type="com.wy.bean.Teacher" id="teacher">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="course" column="course"/>
+    </resultMap>
+    
+    <insert id="addTeacher" parameterType="com.wy.bean.Teacher">
+    	insert into teacher(name,course,birth) value(#{name},#{course},#{birth})
+    </insert>
+    
+    <update id="updateTeacher" parameterType="com.wy.bean.Teacher">
+    	update teacher
+    	<set>
+	    	<if test="name !=null and !name.equals(&quot;&quot;)">
+				name = #{name},
+	    	</if>
+	    	<if test="course !=null and !course.equals(&quot;&quot;)">
+	    		course=#{course},
+	    	</if>
+	    	<if test="birth !=null and !birth.equals(&quot;&quot;)">
+	    		birth=#{birth}
+	    	</if>
+    	</set>
+    	<where>
+    		id = #{id}
+    	</where>
+    </update>
+    
+    <delete id="deleteTeacher">
+    	delete from teacher where id = #{id}
+    </delete>
+    
+    <select id="dynamicSelect" resultType="com.wy.bean.Teacher">
+    	select 
+    		<foreach collection="selectedItems" item="item" separator="," >
+    			${item}
+    		</foreach>
+    	from teacher
+    	<where>
+    		<if test="teacher.id !=null">
+    			id=#{teacher.id}
+    		</if>
+    		<if test="teacher.name !=null">
+				and name=#{teacher.name}    		
+    		</if>
+    		<if test="teacher.course !=null">
+    			and course = #{teacher.course}
+    		</if>
+    	</where>
+    </select>
+</mapper>
